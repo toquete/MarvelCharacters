@@ -16,6 +16,7 @@ import com.guilherme.marvelcharacters.data.model.Character
 import com.guilherme.marvelcharacters.data.repository.CharacterRepositoryImpl
 import com.guilherme.marvelcharacters.data.source.remote.RetrofitFactory
 import com.guilherme.marvelcharacters.databinding.ActivityMainBinding
+import com.guilherme.marvelcharacters.interactor.characters.CharacterUseCase
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,10 +27,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //Pode ser melhorado com koin
         val api = RetrofitFactory.makeRetrofitService()
         val characterRepository = CharacterRepositoryImpl(api)
+        val characterUseCase = CharacterUseCase(characterRepository)
 
-        viewModel = ViewModelProviders.of(this, MainViewModelFactory(characterRepository)).get(MainViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, MainViewModelFactory(characterUseCase)).get(MainViewModel::class.java)
         viewModel.characters.observe(this, Observer { result ->
             result?.let { showCharacters(result) }
         })

@@ -2,16 +2,13 @@ package com.guilherme.marvelcharacters.ui.main
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
-import com.guilherme.marvelcharacters.BaseViewModel
 import com.guilherme.marvelcharacters.data.model.Character
-import com.guilherme.marvelcharacters.data.repository.CharacterRepository
-import com.guilherme.marvelcharacters.data.repository.CharacterRequestException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import com.guilherme.marvelcharacters.interactor.characters.CharacterUseCase
 
-class MainViewModel(private val characterRepository: CharacterRepository) : BaseViewModel() {
+class MainViewModel(private val characterUseCase: CharacterUseCase) : ViewModel() {
 
     val isLoading = ObservableBoolean(false)
 
@@ -24,26 +21,33 @@ class MainViewModel(private val characterRepository: CharacterRepository) : Base
     val characters: LiveData<List<Character>>
         get() = _characters
 
-    override val uiScope: CoroutineScope
-        get() = super.uiScope
+    override fun onCleared() {
+        super.onCleared()
+        characterUseCase.unsubscribe()
+    }
 
     fun onSearchCharacter(character: String) {
-        uiScope.launch {
-            try {
-                isLoading.set(true)
-                isEmpty.set(false)
-                val charactersList = characterRepository.getCharacters(character)
-                _characters.value = charactersList
+        isLoading.set(true)
+        isEmpty.set(false)
 
-                if (charactersList.isEmpty()) {
-                    message.set("No characters with that name. Try again!")
-                    isEmpty.set(true)
+        with(characterUseCase) {
+            characterName = character
+            execute {
+                onComplete {
+                    _characters.value = it
+
+                    if (it.isEmpty()) {
+                        message.set("No characters with that name. Try again!")
+                        isEmpty.set(true)
+                    }
+                    isLoading.set(false)
                 }
-            } catch (error: CharacterRequestException) {
-                message.set(error.message)
-                isEmpty.set(true)
-            } finally {
-                isLoading.set(false)
+
+                onError {
+                    message.set(it.message)
+                    isEmpty.set(true)
+                    isLoading.set(false)
+                }
             }
         }
     }

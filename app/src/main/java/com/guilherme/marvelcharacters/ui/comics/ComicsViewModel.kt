@@ -1,14 +1,10 @@
 package com.guilherme.marvelcharacters.ui.comics
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
-import com.guilherme.marvelcharacters.data.model.Comic
-import com.guilherme.marvelcharacters.interactor.comics.ComicUseCase
 
-class ComicsViewModel(private val comicUseCase: ComicUseCase) : ViewModel() {
+class ComicsViewModel() : ViewModel() {
 
     val isLoading = ObservableBoolean(false)
 
@@ -16,44 +12,15 @@ class ComicsViewModel(private val comicUseCase: ComicUseCase) : ViewModel() {
 
     val message = ObservableField<String>()
 
-    private val _comics = MutableLiveData<List<Comic>>()
+    // TODO: Criar live data que será observada pela view
 
-    val comics: LiveData<List<Comic>>
-        get() = _comics
-
-    override fun onCleared() {
-        super.onCleared()
-        comicUseCase.unsubscribe()
-    }
+    // TODO: Sobrescrever método onCleared para cancelar o subscribe do use case
 
     fun onStart(characterId: Int) {
         callGetComics(characterId)
     }
 
     private fun callGetComics(characterId: Int) {
-        isLoading.set(true)
-        isEmpty.set(false)
-
-        with(comicUseCase) {
-            id = characterId
-            execute {
-                onComplete {
-                    _comics.value = it
-
-                    if (it.isEmpty()) {
-                        message.set("No comics available for this character :/")
-                        isEmpty.set(true)
-                    }
-
-                    isLoading.set(false)
-                }
-
-                onError {
-                    message.set(it.message)
-                    isEmpty.set(true)
-                    isLoading.set(false)
-                }
-            }
-        }
+        TODO("Utilizar use case (coroutine) para coletar o resultado da chamada à API")
     }
 }

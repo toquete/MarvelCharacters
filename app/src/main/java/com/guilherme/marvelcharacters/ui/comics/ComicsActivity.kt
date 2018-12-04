@@ -24,14 +24,11 @@ class ComicsActivity : AppCompatActivity() {
 
         val characterId = intent.getIntExtra("CHARACTER_ID", 0)
 
-        val api = RetrofitFactory.api
-        val repository = ComicRepositoryImpl(api)
-        val userCase = ComicUseCase(repository)
+        // TODO: Criar useCase para comics!
 
-        viewModel = ViewModelProviders.of(this, ComicsViewModelFactory(userCase)).get(ComicsViewModel::class.java)
-        viewModel.comics.observe(this, Observer { result ->
-            result?.let { showComics(it) }
-        })
+        viewModel = ViewModelProviders.of(this).get(ComicsViewModel::class.java)
+
+        // TODO: observar resultado da chamada a API
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_comics)
         binding.viewModel = viewModel

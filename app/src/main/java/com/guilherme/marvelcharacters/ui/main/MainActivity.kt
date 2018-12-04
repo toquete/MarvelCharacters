@@ -13,10 +13,11 @@ import android.support.v7.widget.SearchView
 import android.view.Menu
 import com.guilherme.marvelcharacters.R
 import com.guilherme.marvelcharacters.data.model.Character
-import com.guilherme.marvelcharacters.data.repository.CharacterRepositoryImpl
+import com.guilherme.marvelcharacters.data.repository.character.CharacterRepositoryImpl
 import com.guilherme.marvelcharacters.data.source.remote.RetrofitFactory
 import com.guilherme.marvelcharacters.databinding.ActivityMainBinding
 import com.guilherme.marvelcharacters.interactor.characters.CharacterUseCase
+import com.guilherme.marvelcharacters.ui.comics.ComicsActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         //Pode ser melhorado com koin
-        val api = RetrofitFactory.makeRetrofitService()
+        val api = RetrofitFactory.api
         val characterRepository = CharacterRepositoryImpl(api)
         val characterUseCase = CharacterUseCase(characterRepository)
 
@@ -61,7 +62,14 @@ class MainActivity : AppCompatActivity() {
     private fun showCharacters(list: List<Character>) {
         with(binding.recyclerviewCharacters) {
             layoutManager = LinearLayoutManager(context)
-            adapter = MainAdapter(list)
+            adapter = MainAdapter(list) { goToComicsScreen(it) }
+        }
+    }
+
+    private fun goToComicsScreen(characterId: Int) {
+        Intent(this, ComicsActivity::class.java).apply {
+            putExtra("CHARACTER_ID", characterId)
+            startActivity(this)
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.guilherme.marvelcharacters.data.repository
+package com.guilherme.marvelcharacters.data.repository.character
 
 import com.guilherme.marvelcharacters.BuildConfig
 import com.guilherme.marvelcharacters.data.model.Character

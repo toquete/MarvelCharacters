@@ -6,8 +6,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitFactory {
     const val BASE_URL = "https://gateway.marvel.com/v1/public/"
 
-    fun makeRetrofitService(): Api {
-        return Retrofit.Builder()
+    lateinit var api: Api
+
+    fun makeRetrofitService() {
+        api = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

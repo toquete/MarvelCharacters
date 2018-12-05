@@ -12,6 +12,6 @@ class ComicRepositoryImpl(private val api: Api) : ComicRepository {
         val ts = System.currentTimeMillis().toString()
         val hash = String(Hex.encodeHex(DigestUtils.md5(ts + BuildConfig.MARVEL_PRIVATE_KEY + BuildConfig.MARVEL_KEY)))
 
-        TODO("Implementar chamada à api")
+        TODO("2 - Implementar chamada à api")
     }
 }

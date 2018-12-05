@@ -1,6 +1,5 @@
 package com.guilherme.marvelcharacters.ui.comics
 
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -8,10 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import com.guilherme.marvelcharacters.R
 import com.guilherme.marvelcharacters.data.model.Comic
-import com.guilherme.marvelcharacters.data.repository.comic.ComicRepositoryImpl
-import com.guilherme.marvelcharacters.data.source.remote.RetrofitFactory
 import com.guilherme.marvelcharacters.databinding.ActivityComicsBinding
-import com.guilherme.marvelcharacters.interactor.comics.ComicUseCase
 
 class ComicsActivity : AppCompatActivity() {
 
@@ -24,11 +20,11 @@ class ComicsActivity : AppCompatActivity() {
 
         val characterId = intent.getIntExtra("CHARACTER_ID", 0)
 
-        // TODO: Criar useCase para comics!
+        // TODO: 3 - Criar useCase para comics!
 
         viewModel = ViewModelProviders.of(this).get(ComicsViewModel::class.java)
 
-        // TODO: observar resultado da chamada a API
+        // TODO: 8 - observar resultado da chamada a API
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_comics)
         binding.viewModel = viewModel

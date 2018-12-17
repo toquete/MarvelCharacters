@@ -31,8 +31,7 @@ class MainViewModel(private val characterUseCase: CharacterUseCase) : ViewModel(
         isEmpty.set(false)
 
         with(characterUseCase) {
-            characterName = character
-            execute {
+            execute(character) {
                 onComplete {
                     _characters.value = it
 

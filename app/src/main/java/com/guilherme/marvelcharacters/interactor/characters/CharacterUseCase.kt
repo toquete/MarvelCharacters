@@ -4,12 +4,9 @@ import com.guilherme.marvelcharacters.data.model.Character
 import com.guilherme.marvelcharacters.data.repository.character.CharacterRepository
 import com.guilherme.marvelcharacters.interactor.UseCase
 
-class CharacterUseCase(private val characterRepository: CharacterRepository) : UseCase<List<Character>>() {
+class CharacterUseCase(private val characterRepository: CharacterRepository) : UseCase<String, List<Character>>() {
 
-    //há uma melhor maneira para passar parametros pro usecase??
-    lateinit var characterName: String
-
-    override suspend fun executeOnBackground(): List<Character> {
-        return characterRepository.getCharacters(characterName)
+    override suspend fun executeOnBackground(parameters: String): List<Character> {
+        return characterRepository.getCharacters(parameters)
     }
 }

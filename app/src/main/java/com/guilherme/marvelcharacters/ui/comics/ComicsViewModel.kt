@@ -35,8 +35,7 @@ class ComicsViewModel(private val comicUseCase: ComicUseCase) : ViewModel() {
         isEmpty.set(false)
 
         with(comicUseCase) {
-            id = characterId
-            execute {
+            execute(characterId) {
                 onComplete {
                     _comics.value = it
 

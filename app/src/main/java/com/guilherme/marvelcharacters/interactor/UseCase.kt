@@ -15,22 +15,22 @@ import kotlin.coroutines.CoroutineContext
  */
 typealias CompletionBlock<T> = UseCase.Request<T>.() -> Unit
 
-abstract class UseCase<T> {
+abstract class UseCase<P, T> {
 
     private var parentJob: Job = Job()
     private val backgroundContext: CoroutineContext = Dispatchers.IO
     private val foregroundContext: CoroutineContext = Dispatchers.Main
 
-    abstract suspend fun executeOnBackground(): T
+    abstract suspend fun executeOnBackground(parameters: P): T
 
-    fun execute(block: CompletionBlock<T>) {
+    fun execute(parameters: P, block: CompletionBlock<T>) {
         val response = Request<T>().apply { block() }
         unsubscribe()
         parentJob = Job()
         CoroutineScope(foregroundContext + parentJob).launch {
             try {
                 val result = withContext(backgroundContext) {
-                    executeOnBackground()
+                    executeOnBackground(parameters)
                 }
                 response(result)
             } catch (cancellationException: CancellationException) {

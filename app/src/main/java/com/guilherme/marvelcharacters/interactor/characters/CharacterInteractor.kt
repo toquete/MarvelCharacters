@@ -1,18 +1,24 @@
-package com.guilherme.marvelcharacters.data.repository.character
+package com.guilherme.marvelcharacters.interactor.characters
 
 import com.guilherme.marvelcharacters.BuildConfig
 import com.guilherme.marvelcharacters.data.model.Character
 import com.guilherme.marvelcharacters.data.source.remote.Api
+import com.guilherme.marvelcharacters.interactor.Interactor
+import kotlinx.coroutines.Dispatchers
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
+import kotlin.coroutines.CoroutineContext
 
-class CharacterRepositoryImpl(private val api: Api) : CharacterRepository {
+class CharacterInteractor(
+    private val api: Api,
+    coroutineContext: CoroutineContext = Dispatchers.IO
+) : Interactor<String, List<Character>>(coroutineContext) {
 
-    override fun getCharacters(name: String): List<Character> {
+    override fun run(params: String): List<Character> {
         val ts = System.currentTimeMillis().toString()
         val hash = String(Hex.encodeHex(DigestUtils.md5(ts + BuildConfig.MARVEL_PRIVATE_KEY + BuildConfig.MARVEL_KEY)))
 
-        val result = api.getCharacters(ts, hash, BuildConfig.MARVEL_KEY, name).execute()
+        val result = api.getCharacters(ts, hash, BuildConfig.MARVEL_KEY, params).execute()
         return result.body()?.container?.characters ?: emptyList()
     }
 }

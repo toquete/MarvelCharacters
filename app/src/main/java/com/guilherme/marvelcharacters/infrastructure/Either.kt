@@ -11,12 +11,6 @@ fun <E> error(value: E): Either<E, Nothing> = Either.Error(value)
 fun <V> either(action: () -> V): Either<Exception, V> =
     try { value(action()) } catch (e: Exception) { error(e) }
 
-inline infix fun <E, E2, V> Either<E, V>
-        .mapError(f: (E) -> E2): Either<E2, V> = when(this) {
-    is Either.Error -> Either.Error(f(error))
-    is Either.Value -> this
-}
-
 inline fun <E, V, A> Either<E, V>
         .fold(e: (E) -> A, v: (V) -> A): A = when(this) {
     is Either.Error -> e(this.error)

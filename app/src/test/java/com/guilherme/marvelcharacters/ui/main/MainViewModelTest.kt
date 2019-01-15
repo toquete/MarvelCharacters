@@ -27,7 +27,7 @@ class MainViewModelTest {
     @Mock
     lateinit var characterInteractor: CharacterInteractor
 
-    lateinit var mainViewModel: MainViewModel
+    private lateinit var mainViewModel: MainViewModel
 
     @Before
     fun setup() {

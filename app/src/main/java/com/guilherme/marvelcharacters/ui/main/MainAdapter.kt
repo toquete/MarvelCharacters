@@ -14,8 +14,12 @@ class MainAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val binding = DataBindingUtil.inflate<ItemListBinding>(LayoutInflater.from(parent.context),
-            R.layout.item_list, parent, false)
+        val binding = DataBindingUtil.inflate<ItemListBinding>(
+            LayoutInflater.from(parent.context),
+            R.layout.item_list,
+            parent,
+            false
+        )
 
         return BindingHolder(binding)
     }

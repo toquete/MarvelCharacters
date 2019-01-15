@@ -10,14 +10,18 @@ import retrofit2.http.Query
 interface Api {
 
     @GET("characters")
-    fun getCharacters(@Query("ts") ts: String,
-                      @Query("hash") hash: String,
-                      @Query("apikey") apiKey: String,
-                      @Query("nameStartsWith") nameStartsWith: String) : Call<Result>
+    fun getCharacters(
+        @Query("ts") ts: String,
+        @Query("hash") hash: String,
+        @Query("apikey") apiKey: String,
+        @Query("nameStartsWith") nameStartsWith: String
+    ): Call<Result>
 
     @GET("characters/{id}/comics")
-    fun getComics(@Path("id") id: Int,
-                  @Query("ts") ts: String,
-                  @Query("hash") hash: String,
-                  @Query("apikey") apiKey: String) : Call<ComicResult>
+    fun getComics(
+        @Path("id") id: Int,
+        @Query("ts") ts: String,
+        @Query("hash") hash: String,
+        @Query("apikey") apiKey: String
+    ): Call<ComicResult>
 }

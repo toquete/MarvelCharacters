@@ -41,8 +41,8 @@ class MainViewModel(
 }
 
 sealed class CharacterViewState {
-    data class ShowCharacters(val list: List<Character>): CharacterViewState()
-    object Loading: CharacterViewState()
-    data class Error(val message: String?): CharacterViewState()
-    object EmptyList: CharacterViewState()
+    data class ShowCharacters(val list: List<Character>) : CharacterViewState()
+    object Loading : CharacterViewState()
+    data class Error(val message: String?) : CharacterViewState()
+    object EmptyList : CharacterViewState()
 }

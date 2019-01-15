@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         mainViewModel.state.observe(this, Observer {
-            when(it) {
+            when (it) {
                 is CharacterViewState.Loading -> showLoading()
                 is CharacterViewState.ShowCharacters -> showCharacters(it.list)
                 is CharacterViewState.Error -> showError(it.message)

@@ -22,16 +22,16 @@ class MainAdapter(
     override fun getItemCount() = characters.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as BindingHolder).bind(characters[position].name)
+        (holder as BindingHolder).bind(characters[position].id, characters[position].name)
     }
 
     inner class BindingHolder(item: View) : RecyclerView.ViewHolder(item) {
 
         private val characterItem = item.findViewById<TextView>(R.id.textview_character)
 
-        fun bind(character: String) {
+        fun bind(id: Int, character: String) {
             characterItem.text = character
-            characterItem.setOnClickListener { onCharacterClick }
+            characterItem.setOnClickListener { onCharacterClick(id) }
         }
     }
 }

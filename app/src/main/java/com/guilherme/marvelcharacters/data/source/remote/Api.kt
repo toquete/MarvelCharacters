@@ -1,8 +1,10 @@
 package com.guilherme.marvelcharacters.data.source.remote
 
+import com.guilherme.marvelcharacters.data.model.ComicResult
 import com.guilherme.marvelcharacters.data.model.Result
 import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface Api {
@@ -16,4 +18,11 @@ interface Api {
     ): Deferred<Result>
 
     // TODO: 1 - Implementar assinatura da nova API
+    @GET("characters/{id}/comics")
+    fun getComics(
+        @Path("id") id: Int,
+        @Query("ts") ts: String,
+        @Query("hash") hash: String,
+        @Query("apikey") apiKey: String
+    ): Deferred<ComicResult>
 }

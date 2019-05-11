@@ -8,7 +8,7 @@ import org.apache.commons.codec.digest.DigestUtils
 
 class ComicRepositoryImpl(private val api: Api) : ComicRepository {
 
-    override fun getComics(characterId: Int): List<Comic> {
+    override suspend fun getComics(characterId: Int): List<Comic> {
         val ts = System.currentTimeMillis().toString()
         val hash = String(Hex.encodeHex(DigestUtils.md5(ts + BuildConfig.MARVEL_PRIVATE_KEY + BuildConfig.MARVEL_KEY)))
 

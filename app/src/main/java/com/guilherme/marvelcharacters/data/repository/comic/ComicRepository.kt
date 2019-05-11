@@ -4,5 +4,5 @@ import com.guilherme.marvelcharacters.data.model.Comic
 
 interface ComicRepository {
 
-    fun getComics(characterId: Int) : List<Comic>
+    suspend fun getComics(characterId: Int): List<Comic>
 }

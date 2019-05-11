@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val api = RetrofitFactory.makeRetrofitService()
+        val api = RetrofitFactory.api
         val characterRepository = CharacterRepositoryImpl(api)
 
         viewModel = ViewModelProviders.of(

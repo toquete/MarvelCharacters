@@ -31,6 +31,7 @@ class MainAdapter(
 
         fun bind(character: String) {
             characterItem.text = character
+            characterItem.setOnClickListener { onCharacterClick }
         }
     }
 }

@@ -2,11 +2,15 @@ package com.guilherme.marvelcharacters.ui.main
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.guilherme.marvelcharacters.interactor.characters.CharacterUseCase
+import com.guilherme.marvelcharacters.data.repository.character.CharacterRepository
+import kotlin.coroutines.CoroutineContext
 
-class MainViewModelFactory(private val characterUseCase: CharacterUseCase) : ViewModelProvider.Factory {
+class MainViewModelFactory(
+    private val characterRepository: CharacterRepository,
+    private val coroutineContext: CoroutineContext
+) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return MainViewModel(characterUseCase) as T
+        return MainViewModel(characterRepository, coroutineContext) as T
     }
 }

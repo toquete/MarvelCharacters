@@ -1,12 +1,12 @@
 package com.guilherme.marvelcharacters.ui.main
 
-import android.databinding.DataBindingUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.guilherme.marvelcharacters.R
 import com.guilherme.marvelcharacters.data.model.Character
-import com.guilherme.marvelcharacters.databinding.ItemListBinding
 
 class MainAdapter(
     private var characters: List<Character>,
@@ -14,24 +14,23 @@ class MainAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val binding = DataBindingUtil.inflate<ItemListBinding>(LayoutInflater.from(parent.context),
-            R.layout.item_list, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false)
 
-        return BindingHolder(binding)
+        return BindingHolder(view)
     }
 
     override fun getItemCount() = characters.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as BindingHolder).bind(characters[position].id, characters[position].name)
+        (holder as BindingHolder).bind(characters[position].name)
     }
 
-    inner class BindingHolder(private val binding: ItemListBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class BindingHolder(item: View) : RecyclerView.ViewHolder(item) {
 
-        fun bind(id: Int, character: String) {
-            binding.character = character
-            binding.textviewCharacter.setOnClickListener { onCharacterClick(id) }
-            binding.executePendingBindings()
+        private val characterItem = item.findViewById<TextView>(R.id.textview_character)
+
+        fun bind(character: String) {
+            characterItem.text = character
         }
     }
 }

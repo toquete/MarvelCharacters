@@ -8,11 +8,11 @@ import org.apache.commons.codec.digest.DigestUtils
 
 class CharacterRepositoryImpl(private val api: Api) : CharacterRepository {
 
-    override fun getCharacters(name: String): List<Character> {
+    override suspend fun getCharacters(name: String): List<Character> {
         val ts = System.currentTimeMillis().toString()
         val hash = String(Hex.encodeHex(DigestUtils.md5(ts + BuildConfig.MARVEL_PRIVATE_KEY + BuildConfig.MARVEL_KEY)))
 
-        val result = api.getCharacters(ts, hash, BuildConfig.MARVEL_KEY, name).execute()
-        return result.body()?.container?.characters ?: emptyList()
+        val result = api.getCharacters(ts, hash, BuildConfig.MARVEL_KEY, name).await()
+        return result.container.characters
     }
 }

@@ -2,53 +2,46 @@ package com.guilherme.marvelcharacters.ui.main
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import android.databinding.ObservableBoolean
-import android.databinding.ObservableField
+import com.guilherme.marvelcharacters.BaseViewModel
 import com.guilherme.marvelcharacters.data.model.Character
-import com.guilherme.marvelcharacters.interactor.characters.CharacterUseCase
+import com.guilherme.marvelcharacters.data.repository.character.CharacterRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import java.lang.Exception
+import kotlin.coroutines.CoroutineContext
 
-class MainViewModel(private val characterUseCase: CharacterUseCase) : ViewModel() {
+class MainViewModel(
+    private val characterRepository: CharacterRepository,
+    coroutineContext: CoroutineContext
+) : BaseViewModel(coroutineContext) {
 
-    val isLoading = ObservableBoolean(false)
+    private val _states = MutableLiveData<CharacterListState>()
+    val states: LiveData<CharacterListState>
+        get() = _states
 
-    val isEmpty = ObservableBoolean(true)
-
-    val message = ObservableField<String>("Use the search box above!")
-
-    private val _characters = MutableLiveData<List<Character>>()
-
-    val characters: LiveData<List<Character>>
-        get() = _characters
-
-    override fun onCleared() {
-        super.onCleared()
-        characterUseCase.unsubscribe()
-    }
+    override val uiScope: CoroutineScope
+        get() = super.uiScope
 
     fun onSearchCharacter(character: String) {
-        isLoading.set(true)
-        isEmpty.set(false)
-
-        with(characterUseCase) {
-            characterName = character
-            execute {
-                onComplete {
-                    _characters.value = it
-
-                    if (it.isEmpty()) {
-                        message.set("No characters with that name. Try again!")
-                        isEmpty.set(true)
-                    }
-                    isLoading.set(false)
+        uiScope.launch {
+            _states.value = CharacterListState.LoadingState
+            try {
+                val charactersList = characterRepository.getCharacters(character)
+                _states.value = if (charactersList.isEmpty()) {
+                    CharacterListState.EmptyState
+                } else {
+                    CharacterListState.Characters(charactersList)
                 }
-
-                onError {
-                    message.set(it.message)
-                    isEmpty.set(true)
-                    isLoading.set(false)
-                }
+            } catch (error: Exception) {
+                _states.value = CharacterListState.ErrorState(error)
             }
         }
+    }
+
+    sealed class CharacterListState {
+        data class Characters(val characters: List<Character>) : CharacterListState()
+        data class ErrorState(val error: Exception) : CharacterListState()
+        object EmptyState : CharacterListState()
+        object LoadingState : CharacterListState()
     }
 }

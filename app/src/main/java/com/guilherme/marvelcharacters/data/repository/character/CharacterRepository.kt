@@ -4,5 +4,5 @@ import com.guilherme.marvelcharacters.data.model.Character
 
 interface CharacterRepository {
 
-    fun getCharacters(name: String): List<Character>
+    suspend fun getCharacters(name: String): List<Character>
 }

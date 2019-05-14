@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showEmptyState() {
         hideLoading()
-        textview_message.text = applicationContext.getString(R.string.empty_state_message)
+        textview_message.text = resources.getString(R.string.empty_state_message)
         textview_message.visibility = View.VISIBLE
     }
 

@@ -1,6 +1,5 @@
 package com.guilherme.marvelcharacters.ui.comics
 
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -26,21 +25,13 @@ class ComicsActivity : AppCompatActivity() {
         val api = RetrofitFactory.api
         val comicsRepository = ComicRepositoryImpl(api)
 
-        // TODO 9 - Prover dependências para ComicsViewModelFactory
+        // TODO 8 - Prover dependências para ComicsViewModelFactory
         viewModel = ViewModelProviders.of(
             this,
-            ComicsViewModelFactory(comicsRepository, Dispatchers.Main)
+            ComicsViewModelFactory(Dispatchers.Main)
         ).get(ComicsViewModel::class.java)
 
-        // TODO: 10 - observar resultado da chamada a API
-        viewModel.states.observe(this, Observer { state ->
-            when(state) {
-                is ComicsViewModel.ComicsState.LoadingState -> showLoading()
-                is ComicsViewModel.ComicsState.Comics -> showComics(state.comics)
-                is ComicsViewModel.ComicsState.EmptyState -> showEmptyState()
-                is ComicsViewModel.ComicsState.ErrorState -> showError(state.error)
-            }
-        })
+        // TODO: 9 - observar resultado da chamada a API
 
         viewModel.onStart(characterId)
     }

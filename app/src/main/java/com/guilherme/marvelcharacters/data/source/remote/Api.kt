@@ -17,7 +17,6 @@ interface Api {
         @Query("nameStartsWith") nameStartsWith: String
     ): Deferred<Result>
 
-    // TODO: 1 - Implementar assinatura da nova API
     @GET("characters/{id}/comics")
     fun getComics(
         @Path("id") id: Int,

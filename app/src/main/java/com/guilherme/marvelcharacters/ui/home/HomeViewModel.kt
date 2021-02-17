@@ -29,7 +29,7 @@ class HomeViewModel(
 
     val nightMode: LiveData<Int> = preferenceRepository.nightModeLive
 
-    var query: String? = null
+    var query: String = ""
 
     fun onSearchCharacter(character: String) {
         viewModelScope.launch(coroutineContext) {

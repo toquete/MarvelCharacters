@@ -6,11 +6,29 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.widget.doOnTextChanged
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -18,6 +36,7 @@ import com.guilherme.marvelcharacters.EventObserver
 import com.guilherme.marvelcharacters.R
 import com.guilherme.marvelcharacters.data.model.Character
 import com.guilherme.marvelcharacters.databinding.FragmentHomeBinding
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -33,7 +52,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        homeViewModel.query?.let { homeBinding.filledTextField.editText?.setText(it) }
+//        homeViewModel.query?.let { homeBinding.filledTextField.editText?.setText(it) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,7 +67,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        homeViewModel.query = homeBinding.filledTextField.editText?.text.toString()
+//        homeViewModel.query = homeBinding.filledTextField.editText?.text.toString()
         _homeBinding = null
     }
 
@@ -73,27 +92,94 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setupScreenBindings() {
-        homeBinding.run {
-            button.setOnClickListener {
-                closeKeyboard()
-                homeViewModel.onSearchCharacter(filledTextField.editText?.text.toString())
-            }
+        homeBinding.composeView.setContent {
+            SearchSection()
+        }
+    }
 
-            filledTextField.editText?.doOnTextChanged { text, _, _, _ ->
-                button.isEnabled = !text.isNullOrEmpty()
-            }
+    @Composable
+    fun SearchSection(homeViewModel: HomeViewModel = getViewModel()) {
+        var searchText by remember { mutableStateOf(homeViewModel.query) }
+        var isButtonEnabled by remember { mutableStateOf(false) }
 
-            searchEditText.setOnEditorActionListener { textView, actionId, _ ->
-                when (actionId) {
-                    EditorInfo.IME_ACTION_SEARCH -> {
-                        closeKeyboard()
-                        homeViewModel.onSearchCharacter(textView.text.toString())
-                        true
-                    }
-                    else -> false
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SearchEditText(
+                value = searchText,
+                onValueChange = { text ->
+                    isButtonEnabled = text.isNotEmpty()
+                    searchText = text
+                    homeViewModel.query = text
+                },
+                placeholder = stringResource(id = R.string.character),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Search
+                ),
+                keyboardActions = KeyboardActions(onSearch = { homeViewModel.onSearchCharacter(searchText) }),
+                trailingIcon = if (isButtonEnabled) Icons.Filled.Close else null
+            )
+            SearchButton(
+                onClick = { homeViewModel.onSearchCharacter(searchText) },
+                enabled = isButtonEnabled,
+                text = stringResource(id = R.string.search)
+            )
+        }
+    }
+
+    @Composable
+    fun SearchEditText(
+        value: String,
+        onValueChange: (String) -> Unit,
+        placeholder: String,
+        keyboardOptions: KeyboardOptions,
+        keyboardActions: KeyboardActions,
+        trailingIcon: ImageVector? = null
+    ) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = { onValueChange(it) },
+            placeholder = { Text(text = placeholder) },
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions,
+            singleLine = true,
+            trailingIcon = {
+                if (trailingIcon != null) {
+                    Icon(
+                        trailingIcon,
+                        contentDescription = null
+                    )
                 }
             }
+        )
+    }
+
+    @Composable
+    fun SearchButton(
+        onClick: () -> Unit,
+        enabled: Boolean,
+        text: String
+    ) {
+        Button(
+            onClick = onClick,
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .fillMaxWidth(),
+            enabled = enabled
+        ) {
+            Text(text = text.toUpperCase())
         }
+    }
+
+    @Preview(
+        showBackground = true,
+        backgroundColor = 0xFFFFFF
+    )
+    @Composable
+    fun DefaultPreview() {
+        SearchSection()
     }
 
     private fun setupObservers() {
@@ -119,7 +205,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun closeKeyboard() {
         (activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager).run {
-            hideSoftInputFromWindow(homeBinding.button.windowToken, 0)
+//            hideSoftInputFromWindow(homeBinding.button.windowToken, 0)
         }
     }
 
